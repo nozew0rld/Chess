@@ -1,7 +1,17 @@
-import React from "react";
+import Tila from "./Tile/Tila";
 
 const verticalAxis = ["1", "2", "3", "4", "5", "6", "7", "8"];
-const horizontalAxis = ["a", "b", "c", "d", "d", "f", "g", "h"];
+const horizontalAxis = ["a", "b", "c", "d", "e", "f", "g", "h"];
+
+interface Piece {
+  image: string;
+  x: number;
+  y: number;
+}
+const pieces: Piece[] = [];
+
+pieces.push({ image: "./src/assets/bp.png", x: 0, y: 1 });
+
 function Chessboard() {
   let board = [];
 
@@ -9,22 +19,23 @@ function Chessboard() {
     for (let i = 0; i < horizontalAxis.length; i++) {
       const number = j + i + 2;
 
-      if (number % 2 === 0) {
-        (horizontalAxis[i], verticalAxis[j]);
-        board.push(<div className="bg-[#ba5645] w-[100px] h-[100px]"></div>);
-      } else {
-        (horizontalAxis[i], verticalAxis[j]);
-        board.push(<div className="bg-[#f5dcc4] w-[100px] h-[100px]"></div>);
-      }
+      let image = undefined;
+
+      pieces.forEach((p) => {
+        if (p.x === i && p.y === j) {
+          image = p.image;
+        }
+      });
+
+      board.push(<Tila image={image} number={number} />);
     }
   }
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="w-[800px] h-[800px] bg-amber-200 grid grid-cols-8 grid-rows-8">
+      <div className="w-[800px] h-[800px] grid grid-cols-8 grid-rows-8">
         {board}
       </div>
     </div>
   );
 }
-
 export default Chessboard;
