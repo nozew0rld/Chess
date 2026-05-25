@@ -10,7 +10,30 @@ interface Piece {
 }
 const pieces: Piece[] = [];
 
-pieces.push({ image: "./src/assets/bp.png", x: 0, y: 1 });
+for (let p = 0; p < 2; p++) {
+  const type = p === 0 ? "b" : "w";
+  const y = p === 0 ? 7 : 0;
+
+  pieces.push({ image: `./src/assets/${type}r.png`, x: 0, y });
+  pieces.push({ image: `./src/assets/${type}r.png`, x: 7, y });
+
+  pieces.push({ image: `./src/assets/${type}n.png`, x: 1, y });
+  pieces.push({ image: `./src/assets/${type}n.png`, x: 6, y });
+
+  pieces.push({ image: `./src/assets/${type}b.png`, x: 2, y });
+  pieces.push({ image: `./src/assets/${type}b.png`, x: 5, y });
+
+  pieces.push({ image: `./src/assets/${type}q.png`, x: 3, y });
+  pieces.push({ image: `./src/assets/${type}k.png`, x: 4, y });
+}
+
+for (let i = 0; i < 8; i++) {
+  pieces.push({ image: "./src/assets/bp.png", x: i, y: 6 });
+}
+
+for (let i = 0; i < 8; i++) {
+  pieces.push({ image: "./src/assets/wp.png", x: i, y: 1 });
+}
 
 function Chessboard() {
   let board = [];
@@ -27,7 +50,7 @@ function Chessboard() {
         }
       });
 
-      board.push(<Tila image={image} number={number} />);
+      board.push(<Tila key={`${j},${i}`} image={image} number={number} />);
     }
   }
   return (
