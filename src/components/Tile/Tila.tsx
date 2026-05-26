@@ -1,5 +1,5 @@
 interface Props {
-  image: string;
+  image?: string;
   number: number;
 }
 
@@ -10,7 +10,7 @@ export default function Tila({ number, image }: Props) {
         {image && (
           <div
             style={{ backgroundImage: `url(${image})` }}
-            className=" w-[100px] h-[100px] bg-cover bg-center bg-no-repeat bg-size-[80px] cursor-grab active:cursor-grabbing"
+            className="chess-piece w-[100px] h-[100px] bg-cover bg-center bg-no-repeat bg-size-[80px] cursor-grab active:cursor-grabbing "
           ></div>
         )}
       </div>
@@ -21,7 +21,7 @@ export default function Tila({ number, image }: Props) {
         {image && (
           <div
             style={{ backgroundImage: `url(${image})` }}
-            className=" w-[100px] h-[100px] bg-cover bg-center bg-no-repeat bg-size-[80px] cursor-grab active:cursor-grabbing"
+            className="chess-piece w-[100px] h-[100px] bg-cover bg-center bg-no-repeat bg-size-[80px] cursor-grab active:cursor-grabbing "
           ></div>
         )}
       </div>
