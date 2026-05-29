@@ -1,6 +1,7 @@
 import type React from "react";
 import Tila from "./Tile/Tila";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import Referee from "./Referee/Referee";
 
 const verticalAxis = ["1", "2", "3", "4", "5", "6", "7", "8"];
 const horizontalAxis = ["a", "b", "c", "d", "e", "f", "g", "h"];
@@ -9,34 +10,114 @@ interface Piece {
   image: string;
   x: number;
   y: number;
+  type: PieceType;
+  team: TeamType;
 }
-const pieces: Piece[] = [];
+
+export const TeamType = {
+  OPPONENT: 0,
+  OUR: 1,
+} as const;
+
+export type TeamType = (typeof TeamType)[keyof typeof TeamType];
+
+export const PieceType = {
+  PAWN: 0,
+  BISHOP: 1,
+  KNIGHT: 2,
+  ROOK: 3,
+  QUEEN: 4,
+  KING: 5,
+} as const;
+
+export type PieceType = (typeof PieceType)[keyof typeof PieceType];
 
 const initialBoardState: Piece[] = [];
 
 for (let p = 0; p < 2; p++) {
-  const type = p === 0 ? "b" : "w";
-  const y = p === 0 ? 7 : 0;
+  const teamType = p === 0 ? TeamType.OPPONENT : TeamType.OUR;
+  const type = teamType === TeamType.OPPONENT ? "b" : "w";
+  const y = teamType === TeamType.OPPONENT ? 7 : 0;
 
-  initialBoardState.push({ image: `./src/assets/${type}r.png`, x: 0, y });
-  initialBoardState.push({ image: `./src/assets/${type}r.png`, x: 7, y });
+  initialBoardState.push({
+    image: `./src/assets/${type}r.png`,
+    x: 0,
+    y,
+    type: PieceType.ROOK,
+    team: teamType,
+  });
+  initialBoardState.push({
+    image: `./src/assets/${type}r.png`,
+    x: 7,
+    y,
+    type: PieceType.ROOK,
+    team: teamType,
+  });
 
-  initialBoardState.push({ image: `./src/assets/${type}n.png`, x: 1, y });
-  initialBoardState.push({ image: `./src/assets/${type}n.png`, x: 6, y });
+  initialBoardState.push({
+    image: `./src/assets/${type}n.png`,
+    x: 1,
+    y,
+    type: PieceType.KNIGHT,
+    team: teamType,
+  });
+  initialBoardState.push({
+    image: `./src/assets/${type}n.png`,
+    x: 6,
+    y,
+    type: PieceType.KNIGHT,
+    team: teamType,
+  });
 
-  initialBoardState.push({ image: `./src/assets/${type}b.png`, x: 2, y });
-  initialBoardState.push({ image: `./src/assets/${type}b.png`, x: 5, y });
+  initialBoardState.push({
+    image: `./src/assets/${type}b.png`,
+    x: 2,
+    y,
+    type: PieceType.BISHOP,
+    team: teamType,
+  });
+  initialBoardState.push({
+    image: `./src/assets/${type}b.png`,
+    x: 5,
+    y,
+    type: PieceType.BISHOP,
+    team: teamType,
+  });
 
-  initialBoardState.push({ image: `./src/assets/${type}q.png`, x: 3, y });
-  initialBoardState.push({ image: `./src/assets/${type}k.png`, x: 4, y });
+  initialBoardState.push({
+    image: `./src/assets/${type}q.png`,
+    x: 3,
+    y,
+    type: PieceType.QUEEN,
+    team: teamType,
+  });
+  initialBoardState.push({
+    image: `./src/assets/${type}k.png`,
+    x: 4,
+    y,
+    type: PieceType.KING,
+    team: teamType,
+  });
 }
 
 for (let i = 0; i < 8; i++) {
-  initialBoardState.push({ image: "./src/assets/bp.png", x: i, y: 6 });
+  initialBoardState.push({
+    image: "./src/assets/bp.png",
+    x: i,
+    y: 6,
+    type: PieceType.PAWN,
+    team: TeamType.OPPONENT,
+  });
 }
 
 for (let i = 0; i < 8; i++) {
-  initialBoardState.push({ image: "./src/assets/wp.png", x: i, y: 1 });
+  initialBoardState.push({
+    image: "./src/assets/wp.png",
+    x: i,
+    y: 1,
+    type: PieceType.PAWN,
+    team: TeamType.OUR,
+  });
 }
 
 function Chessboard() {
@@ -45,6 +126,7 @@ function Chessboard() {
   const [gridY, setGridY] = useState(0);
   const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
   const chessboardRef = useRef<HTMLDivElement>(null);
+  const referee = new Referee();
 
   function grabPiece(e: React.MouseEvent) {
     const element = e.target as HTMLElement;
@@ -75,11 +157,26 @@ function Chessboard() {
         Math.ceil((e.clientY + chessboard.offsetTop - 800) / 100),
       );
 
+      // Update the piece position
       setPieces((value) => {
         const pieces = value.map((p) => {
           if (p.x === gridX && p.y === gridY) {
-            p.x = x;
-            p.y = y;
+            const validMove = referee.isValidMove(
+              gridX,
+              gridY,
+              x,
+              y,
+              p.type,
+              p.team,
+            );
+            if (validMove) {
+              p.x = x;
+              p.y = y;
+            } else {
+              activePiece.style.position = "relative";
+              activePiece.style.removeProperty("top");
+              activePiece.style.removeProperty("left");
+            }
           }
           return p;
         });
@@ -90,7 +187,6 @@ function Chessboard() {
   }
 
   function movePiece(e: React.MouseEvent) {
-    const element = e.target as HTMLElement;
     const chessboard = chessboardRef.current;
     if (activePiece && chessboard) {
       const minX = chessboard.offsetLeft - 25;
