@@ -1,4 +1,4 @@
-import { PieceType, TeamType, type Piece } from "../Chessboard";
+import { PieceType, TeamType, type Piece } from "../../models/Piece";
 
 export default class Referee {
   tileIsOccupied(x: number, y: number, boardState: Piece[]): boolean {
@@ -24,6 +24,31 @@ export default class Referee {
       return false;
     }
   }
+
+  isEnPassantMove(
+    px: number,
+    py: number,
+    x: number,
+    y: number,
+    type: PieceType,
+    team: TeamType,
+    boardState: Piece[],
+  ) {
+    const pawnDirection = team === TeamType.OUR ? 1 : -1;
+
+    if (type === PieceType.PAWN) {
+      if ((x - px === -1 || x - px === 1) && y - py === pawnDirection) {
+        const piece = boardState.find(
+          (p) => p.x === x && p.y === y - pawnDirection && p.enPassant,
+        );
+        if (piece) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   isValidMove(
     px: number,
     py: number,
@@ -71,5 +96,6 @@ export default class Referee {
         }
       }
     }
+    return false;
   }
 }
