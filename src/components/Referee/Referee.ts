@@ -49,7 +49,7 @@ export default class Referee {
     boardState: Piece[],
   ) {
     const pawnDirection = team === TeamType.OUR ? 1 : -1;
-
+    //PAWN MOVEMENT
     if (type === PieceType.PAWN) {
       if (
         (desiredPostion.x - initialPosition.x === -1 ||
@@ -124,8 +124,8 @@ export default class Referee {
           return true;
         }
       }
+      //MOVEMENT FOR KNIGTH
     } else if (type === PieceType.KNIGHT) {
-      //moving logic for the knight
       for (let i = -1; i < 2; i += 2) {
         for (let j = -1; j < 2; j += 2) {
           //top and bottom side
@@ -156,6 +156,93 @@ export default class Referee {
               }
             }
           }
+        }
+      }
+      //MOVEMENT FOR BISHOP
+    } else if (type === PieceType.BISHOP) {
+      for (let i = 1; i < 8; i++) {
+        //TOP RIGHT MOVEMENT
+        if (
+          desiredPostion.x > initialPosition.x &&
+          desiredPostion.y > initialPosition.y
+        ) {
+          let passedPosition: Position = {
+            x: initialPosition.x + i,
+            y: initialPosition.y + i,
+          };
+          if (this.tileIsOccupied(passedPosition, boardState)) {
+            console.log("Illegal move");
+            break;
+          }
+        }
+        if (
+          desiredPostion.x - initialPosition.x === i &&
+          desiredPostion.y - initialPosition.y === i
+        ) {
+          return true;
+        }
+
+        //BOTTOM RIGHT MOVEMENT
+        if (
+          desiredPostion.x > initialPosition.x &&
+          desiredPostion.y < initialPosition.y
+        ) {
+          let passedPosition: Position = {
+            x: initialPosition.x + i,
+            y: initialPosition.y - i,
+          };
+          if (this.tileIsOccupied(passedPosition, boardState)) {
+            console.log("illegal move");
+            break;
+          }
+        }
+        if (
+          desiredPostion.x - initialPosition.x === i &&
+          desiredPostion.y - initialPosition.y === -i
+        ) {
+          return true;
+        }
+
+        //BOTTOM LEFT MOVEMENT
+        if (
+          desiredPostion.x < initialPosition.x &&
+          desiredPostion.y < initialPosition.y
+        ) {
+          let passedPosition: Position = {
+            x: initialPosition.x - i,
+            y: initialPosition.y - i,
+          };
+          if (this.tileIsOccupied(passedPosition, boardState)) {
+            console.log("illegal move");
+            break;
+          }
+        }
+        if (
+          desiredPostion.x - initialPosition.x === -i &&
+          desiredPostion.y - initialPosition.y === -i
+        ) {
+          return true;
+        }
+
+        //TOP LEFT MOVEMENT
+        if (
+          desiredPostion.x < initialPosition.x &&
+          desiredPostion.y > initialPosition.y
+        ) {
+          let passedPosition: Position = {
+            x: initialPosition.x - i,
+            y: initialPosition.y + i,
+          };
+          if (this.tileIsOccupied(passedPosition, boardState)) {
+            console.log("illegal move");
+            break;
+          }
+        }
+        if (
+          desiredPostion.x - initialPosition.x === -i &&
+          desiredPostion.y - initialPosition.y === i
+        ) {
+          return true;
         }
       }
     }

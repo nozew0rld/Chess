@@ -178,7 +178,7 @@ function Chessboard() {
       const piece = pieces.find((p) =>
         samePosition(p.position, { x: i, y: j }),
       );
-      let image = piece ? piece.image : undefined;
+      const image = piece ? piece.image : undefined;
       board.push(<Tila key={`${j},${i}`} image={image} number={number} />);
     }
   }
