@@ -170,16 +170,24 @@ export default class Referee {
             x: initialPosition.x + i,
             y: initialPosition.y + i,
           };
-          if (this.tileIsOccupied(passedPosition, boardState)) {
-            console.log("Illegal move");
-            break;
+          if (
+            passedPosition.x === desiredPostion.x &&
+            passedPosition.y === desiredPostion.y
+          ) {
+            if (
+              this.tileIsEmpyOrOccupiedByOpponent(
+                passedPosition,
+                boardState,
+                team,
+              )
+            ) {
+              return true;
+            }
+          } else {
+            if (this.tileIsOccupied(passedPosition, boardState)) {
+              break;
+            }
           }
-        }
-        if (
-          desiredPostion.x - initialPosition.x === i &&
-          desiredPostion.y - initialPosition.y === i
-        ) {
-          return true;
         }
 
         //BOTTOM RIGHT MOVEMENT
@@ -191,16 +199,24 @@ export default class Referee {
             x: initialPosition.x + i,
             y: initialPosition.y - i,
           };
-          if (this.tileIsOccupied(passedPosition, boardState)) {
-            console.log("illegal move");
-            break;
+          if (
+            passedPosition.x === desiredPostion.x &&
+            passedPosition.y === desiredPostion.y
+          ) {
+            if (
+              this.tileIsEmpyOrOccupiedByOpponent(
+                passedPosition,
+                boardState,
+                team,
+              )
+            ) {
+              return true;
+            }
+          } else {
+            if (this.tileIsOccupied(passedPosition, boardState)) {
+              break;
+            }
           }
-        }
-        if (
-          desiredPostion.x - initialPosition.x === i &&
-          desiredPostion.y - initialPosition.y === -i
-        ) {
-          return true;
         }
 
         //BOTTOM LEFT MOVEMENT
@@ -212,16 +228,24 @@ export default class Referee {
             x: initialPosition.x - i,
             y: initialPosition.y - i,
           };
-          if (this.tileIsOccupied(passedPosition, boardState)) {
-            console.log("illegal move");
-            break;
+          if (
+            passedPosition.x === desiredPostion.x &&
+            passedPosition.y === desiredPostion.y
+          ) {
+            if (
+              this.tileIsEmpyOrOccupiedByOpponent(
+                passedPosition,
+                boardState,
+                team,
+              )
+            ) {
+              return true;
+            }
+          } else {
+            if (this.tileIsOccupied(passedPosition, boardState)) {
+              break;
+            }
           }
-        }
-        if (
-          desiredPostion.x - initialPosition.x === -i &&
-          desiredPostion.y - initialPosition.y === -i
-        ) {
-          return true;
         }
 
         //TOP LEFT MOVEMENT
@@ -233,16 +257,24 @@ export default class Referee {
             x: initialPosition.x - i,
             y: initialPosition.y + i,
           };
-          if (this.tileIsOccupied(passedPosition, boardState)) {
-            console.log("illegal move");
-            break;
+          if (
+            passedPosition.x === desiredPostion.x &&
+            passedPosition.y === desiredPostion.y
+          ) {
+            if (
+              this.tileIsEmpyOrOccupiedByOpponent(
+                passedPosition,
+                boardState,
+                team,
+              )
+            ) {
+              return true;
+            }
+          } else {
+            if (this.tileIsOccupied(passedPosition, boardState)) {
+              break;
+            }
           }
-        }
-        if (
-          desiredPostion.x - initialPosition.x === -i &&
-          desiredPostion.y - initialPosition.y === i
-        ) {
-          return true;
         }
       }
     }
