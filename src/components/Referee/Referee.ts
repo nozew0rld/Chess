@@ -175,7 +175,7 @@ export default class Referee {
         desiredPostion.x > initialPosition.x &&
         desiredPostion.y > initialPosition.y
       ) {
-        let passedPosition: Position = {
+        const passedPosition: Position = {
           x: initialPosition.x + i,
           y: initialPosition.y + i,
         };
@@ -204,7 +204,7 @@ export default class Referee {
         desiredPostion.x > initialPosition.x &&
         desiredPostion.y < initialPosition.y
       ) {
-        let passedPosition: Position = {
+        const passedPosition: Position = {
           x: initialPosition.x + i,
           y: initialPosition.y - i,
         };
@@ -233,7 +233,7 @@ export default class Referee {
         desiredPostion.x < initialPosition.x &&
         desiredPostion.y < initialPosition.y
       ) {
-        let passedPosition: Position = {
+        const passedPosition: Position = {
           x: initialPosition.x - i,
           y: initialPosition.y - i,
         };
@@ -262,7 +262,7 @@ export default class Referee {
         desiredPostion.x < initialPosition.x &&
         desiredPostion.y > initialPosition.y
       ) {
-        let passedPosition: Position = {
+        const passedPosition: Position = {
           x: initialPosition.x - i,
           y: initialPosition.y + i,
         };
@@ -297,9 +297,9 @@ export default class Referee {
   ): boolean {
     if (initialPosition.x === desiredPostion.x) {
       for (let i = 1; i < 8; i++) {
-        let multiplier = desiredPostion.y < initialPosition.y ? -1 : 1;
+        const multiplier = desiredPostion.y < initialPosition.y ? -1 : 1;
 
-        let passedPosition: Position = {
+        const passedPosition: Position = {
           x: initialPosition.x,
           y: initialPosition.y + i * multiplier,
         };
@@ -325,9 +325,9 @@ export default class Referee {
     }
     if (initialPosition.y === desiredPostion.y) {
       for (let i = 1; i < 8; i++) {
-        let multiplier = desiredPostion.x < initialPosition.x ? -1 : 1;
+        const multiplier = desiredPostion.x < initialPosition.x ? -1 : 1;
 
-        let passedPosition: Position = {
+        const passedPosition: Position = {
           x: initialPosition.x + i * multiplier,
           y: initialPosition.y,
         };
@@ -349,6 +349,90 @@ export default class Referee {
             break;
           }
         }
+      }
+    }
+    return false;
+  }
+  queenMove(
+    initialPosition: Position,
+    desiredPostion: Position,
+    team: TeamType,
+    boardState: Piece[],
+  ): boolean {
+    for (let i = 1; i < 8; i++) {
+      //vertical
+      if (desiredPostion.x === initialPosition.x) {
+        const multiplier = desiredPostion.y < initialPosition.y ? -1 : 1;
+        const passedPosition: Position = {
+          x: initialPosition.x,
+          y: initialPosition.y + i * multiplier,
+        };
+        if (samePosition(passedPosition, desiredPostion)) {
+          if (
+            this.tileIsEmpyOrOccupiedByOpponent(
+              passedPosition,
+              boardState,
+              team,
+            )
+          ) {
+            return true;
+          }
+        } else {
+          if (this.tileIsOccupied(passedPosition, boardState)) {
+            break;
+          }
+        }
+      }
+      //horizontal
+      if (desiredPostion.y === initialPosition.y) {
+        const multiplier = desiredPostion.x < initialPosition.x ? -1 : 1;
+        const passedPosition: Position = {
+          x: initialPosition.x + i * multiplier,
+          y: initialPosition.y,
+        };
+        if (samePosition(passedPosition, desiredPostion)) {
+          if (
+            this.tileIsEmpyOrOccupiedByOpponent(
+              passedPosition,
+              boardState,
+              team,
+            )
+          ) {
+            return true;
+          }
+        } else {
+          if (this.tileIsOccupied(passedPosition, boardState)) {
+            break;
+          }
+        }
+      }
+      //top right
+      if (
+        desiredPostion.y > initialPosition.y &&
+        desiredPostion.x > initialPosition.x
+      ) {
+        console.log("top  right");
+      }
+      //top left
+      if (
+        desiredPostion.y > initialPosition.y &&
+        desiredPostion.x < initialPosition.x
+      ) {
+        console.log("top  left");
+      }
+      //bottom left
+      if (
+        desiredPostion.y < initialPosition.y &&
+        desiredPostion.x < initialPosition.x
+      ) {
+        console.log("bottom  left");
+      }
+      //bottom right
+      if (
+        desiredPostion.y < initialPosition.y &&
+        desiredPostion.x > initialPosition.x
+      ) {
+        console.log("bottom  right");
       }
     }
     return false;
@@ -395,6 +479,15 @@ export default class Referee {
           boardState,
         );
         break;
+      case PieceType.QUEEN:
+        validMove = this.queenMove(
+          initialPosition,
+          desiredPostion,
+          team,
+          boardState,
+        );
+        break;
+      case PieceType.KING:
     }
     return validMove;
   }

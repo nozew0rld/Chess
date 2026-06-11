@@ -71,7 +71,7 @@ export const initialBoardState: Piece[] = [
     image: `./src/assets/bq.png`,
     position: {
       x: 3,
-      y: 7,
+      y: 3,
     },
 
     type: PieceType.QUEEN,
