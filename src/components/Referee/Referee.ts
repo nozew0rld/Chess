@@ -360,79 +360,41 @@ export default class Referee {
     boardState: Piece[],
   ): boolean {
     for (let i = 1; i < 8; i++) {
-      //vertical
-      if (desiredPostion.x === initialPosition.x) {
-        const multiplier = desiredPostion.y < initialPosition.y ? -1 : 1;
-        const passedPosition: Position = {
-          x: initialPosition.x,
-          y: initialPosition.y + i * multiplier,
-        };
-        if (samePosition(passedPosition, desiredPostion)) {
-          if (
-            this.tileIsEmpyOrOccupiedByOpponent(
-              passedPosition,
-              boardState,
-              team,
-            )
-          ) {
-            return true;
-          }
-        } else {
-          if (this.tileIsOccupied(passedPosition, boardState)) {
-            break;
-          }
+      //diagonal
+      let multiplierX;
+      let multiplierY;
+
+      if (desiredPostion.x < initialPosition.x) {
+        multiplierX = -1;
+      } else if (desiredPostion.x > initialPosition.x) {
+        multiplierX = 1;
+      } else {
+        multiplierX = 0;
+      }
+
+      if (desiredPostion.y < initialPosition.y) {
+        multiplierY = -1;
+      } else if (desiredPostion.y > initialPosition.y) {
+        multiplierY = 1;
+      } else {
+        multiplierY = 0;
+      }
+
+      let passedPosition: Position = {
+        x: initialPosition.x + i * multiplierX,
+        y: initialPosition.y + i * multiplierY,
+      };
+
+      if (samePosition(passedPosition, desiredPostion)) {
+        if (
+          this.tileIsEmpyOrOccupiedByOpponent(passedPosition, boardState, team)
+        ) {
+          return true;
         }
-      }
-      //horizontal
-      if (desiredPostion.y === initialPosition.y) {
-        const multiplier = desiredPostion.x < initialPosition.x ? -1 : 1;
-        const passedPosition: Position = {
-          x: initialPosition.x + i * multiplier,
-          y: initialPosition.y,
-        };
-        if (samePosition(passedPosition, desiredPostion)) {
-          if (
-            this.tileIsEmpyOrOccupiedByOpponent(
-              passedPosition,
-              boardState,
-              team,
-            )
-          ) {
-            return true;
-          }
-        } else {
-          if (this.tileIsOccupied(passedPosition, boardState)) {
-            break;
-          }
+      } else {
+        if (this.tileIsOccupied(passedPosition, boardState)) {
+          break;
         }
-      }
-      //top right
-      if (
-        desiredPostion.y > initialPosition.y &&
-        desiredPostion.x > initialPosition.x
-      ) {
-        console.log("top  right");
-      }
-      //top left
-      if (
-        desiredPostion.y > initialPosition.y &&
-        desiredPostion.x < initialPosition.x
-      ) {
-        console.log("top  left");
-      }
-      //bottom left
-      if (
-        desiredPostion.y < initialPosition.y &&
-        desiredPostion.x < initialPosition.x
-      ) {
-        console.log("bottom  left");
-      }
-      //bottom right
-      if (
-        desiredPostion.y < initialPosition.y &&
-        desiredPostion.x > initialPosition.x
-      ) {
-        console.log("bottom  right");
       }
     }
     return false;
