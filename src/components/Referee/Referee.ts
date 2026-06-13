@@ -106,7 +106,7 @@ export default class Referee {
       desiredPostion.y - initialPosition.y === pawnDirection
     ) {
       //attack in upper or bottom left corner
-      console.log("upper / bottom left");
+
       if (this.tileIsOccupiedByOpponent(desiredPostion, boardState, team)) {
         return true;
       }
@@ -115,7 +115,7 @@ export default class Referee {
       desiredPostion.y - initialPosition.y === pawnDirection
     ) {
       //attack in upper of bottom right corner
-      console.log("upper / bottom right");
+
       if (this.tileIsOccupiedByOpponent(desiredPostion, boardState, team)) {
         return true;
       }
@@ -361,24 +361,59 @@ export default class Referee {
   ): boolean {
     for (let i = 1; i < 8; i++) {
       //diagonal
-      let multiplierX;
-      let multiplierY;
+      let multiplierX =
+        desiredPostion.x < initialPosition.x
+          ? -1
+          : desiredPostion.x > initialPosition.x
+            ? 1
+            : 0;
+      let multiplierY =
+        desiredPostion.y < initialPosition.y
+          ? -1
+          : desiredPostion.y > initialPosition.y
+            ? 1
+            : 0;
 
-      if (desiredPostion.x < initialPosition.x) {
-        multiplierX = -1;
-      } else if (desiredPostion.x > initialPosition.x) {
-        multiplierX = 1;
-      } else {
-        multiplierX = 0;
-      }
+      let passedPosition: Position = {
+        x: initialPosition.x + i * multiplierX,
+        y: initialPosition.y + i * multiplierY,
+      };
 
-      if (desiredPostion.y < initialPosition.y) {
-        multiplierY = -1;
-      } else if (desiredPostion.y > initialPosition.y) {
-        multiplierY = 1;
+      if (samePosition(passedPosition, desiredPostion)) {
+        if (
+          this.tileIsEmpyOrOccupiedByOpponent(passedPosition, boardState, team)
+        ) {
+          return true;
+        }
       } else {
-        multiplierY = 0;
+        if (this.tileIsOccupied(passedPosition, boardState)) {
+          break;
+        }
       }
+    }
+    return false;
+  }
+
+  kingMove(
+    initialPosition: Position,
+    desiredPostion: Position,
+    team: TeamType,
+    boardState: Piece[],
+  ): boolean {
+    for (let i = 1; i < 2; i++) {
+      //diagonal
+      let multiplierX =
+        desiredPostion.x < initialPosition.x
+          ? -1
+          : desiredPostion.x > initialPosition.x
+            ? 1
+            : 0;
+      let multiplierY =
+        desiredPostion.y < initialPosition.y
+          ? -1
+          : desiredPostion.y > initialPosition.y
+            ? 1
+            : 0;
 
       let passedPosition: Position = {
         x: initialPosition.x + i * multiplierX,
@@ -450,6 +485,12 @@ export default class Referee {
         );
         break;
       case PieceType.KING:
+        validMove = this.kingMove(
+          initialPosition,
+          desiredPostion,
+          team,
+          boardState,
+        );
     }
     return validMove;
   }
